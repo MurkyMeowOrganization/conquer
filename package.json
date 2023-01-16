@@ -1,0 +1,46 @@
+{
+	"name": "ds",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
+		"lint": "prettier --plugin-search-dir . --check . && eslint .",
+		"format": "prettier --plugin-search-dir . --write ."
+	},
+	"devDependencies": {
+		"@dimforge/rapier3d-compat": "^0.10.0",
+		"@fontsource/fira-mono": "^4.5.10",
+		"@neoconfetti/svelte": "^1.0.0",
+		"@sveltejs/adapter-auto": "^1.0.0",
+		"@sveltejs/kit": "^1.0.0",
+		"@theatre/core": "^0.5.0",
+		"@theatre/studio": "^0.5.0",
+		"@threlte/core": "^5.0.8",
+		"@threlte/extras": "^4.9.3",
+		"@threlte/preprocess": "^0.0.2",
+		"@threlte/rapier": "^0.5.0",
+		"@threlte/theatre": "^0.0.2",
+		"@types/cookie": "^0.5.1",
+		"@types/three": "^0.146.0",
+		"eslint": "^8.28.0",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-svelte3": "^4.0.0",
+		"prettier": "^2.8.0",
+		"prettier-plugin-svelte": "^2.8.1",
+		"simplex-noise": "^4.0.1",
+		"svelte": "^3.54.0",
+		"svelte-check": "^2.9.2",
+		"svelte-sequential-preprocessor": "^0.0.7",
+		"three": "^0.148.0",
+		"typescript": "^4.9.3",
+		"vite": "^4.0.0"
+	},
+	"type": "module",
+	"dependencies": {
+		"@tweakpane/core": "^1.1.1",
+		"tweakpane": "^3.1.1"
+	}
+}

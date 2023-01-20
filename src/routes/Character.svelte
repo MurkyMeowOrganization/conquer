@@ -1,9 +1,11 @@
 <script>
-	import { PerspectiveCamera, useFrame, useThrelte } from '@threlte/core';
+	import { Layers, Mesh, PerspectiveCamera, useFrame, useThrelte } from '@threlte/core';
 	import { Collider, CollisionGroups, RigidBody } from '@threlte/rapier';
+	import * as THREE from 'three';
 	import { createEventDispatcher, onDestroy } from 'svelte';
 	import { Vector3 } from 'three';
 	import PointerLockControls from './PointerLockControls.svelte';
+	import Weapon from './Weapon.svelte';
 
 	export let position = undefined;
 	export let playerCollisionGroups = [0];
@@ -184,4 +186,6 @@
 		geometry={new THREE.PlaneGeometry(1, 1)}
 		material={spriteMaterial}
 	/>
+
+	<Weapon />
 </PerspectiveCamera>

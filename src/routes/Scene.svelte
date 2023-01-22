@@ -1,18 +1,20 @@
 <script>
-	import { AmbientLight, DirectionalLight, Mesh } from '@threlte/core';
+	import { AmbientLight, DirectionalLight, Mesh, useTexture } from '@threlte/core';
 	import { AutoColliders, CollisionGroups } from '@threlte/rapier';
 	import * as THREE from 'three';
-	import { BoxBufferGeometry, MeshStandardMaterial } from 'three';
+	import { BoxBufferGeometry, MeshStandardMaterial, Sprite } from 'three';
 	import treeImage from '../images/tree.png';
 	import wallImage from '../images/wall.png';
 
 	import Player from './Character.svelte';
 	import Door from './Door.svelte';
+	
 	const loader = new THREE.TextureLoader();
-	const treeGeometry = new THREE.PlaneGeometry(0.5, 2, 5, 5);
+	const treeGeometry = new THREE.PlaneGeometry(1, 3, 5, 5);
 	const treeMaterial = new THREE.MeshBasicMaterial({
 		map: loader.load(treeImage),
-		transparent: true
+		transparent: true,
+		side: THREE.DoubleSide
 	});
 
 	const wallGeometry = new THREE.BoxGeometry(7, 4.55, 0.15);
@@ -84,7 +86,7 @@
 		/>
 
 		<!-- Tree -->
-		<Mesh position={{ y: 1, x: 0, z: 1 }} geometry={treeGeometry} material={treeMaterial} />
+		<Mesh position={{ y: 1.6, x: -4, z: -3 }} geometry={treeGeometry} material={treeMaterial} />
 	</AutoColliders>
 
 	<Player position={{ z: 2 }} />

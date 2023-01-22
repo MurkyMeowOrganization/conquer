@@ -1,8 +1,8 @@
 <script>
-	import { Layers, Mesh, PerspectiveCamera, useFrame, useThrelte } from '@threlte/core';
+	import { Mesh, PerspectiveCamera, useFrame, useThrelte } from '@threlte/core';
 	import { Collider, CollisionGroups, RigidBody } from '@threlte/rapier';
-	import * as THREE from 'three';
 	import { createEventDispatcher, onDestroy } from 'svelte';
+	import * as THREE from 'three';
 	import { Vector3 } from 'three';
 	import PointerLockControls from './PointerLockControls.svelte';
 	import Weapon from './Weapon.svelte';
@@ -180,12 +180,12 @@
 
 <PerspectiveCamera bind:camera={cam} bind:position fov={90}>
 	<PointerLockControls bind:lock />
-
+	<!-- CrossHair -->
 	<Mesh
 		position={{ z: -0.15 }}
 		geometry={new THREE.PlaneGeometry(1, 1)}
 		material={spriteMaterial}
 	/>
-
+	<!-- Weapon -->
 	<Weapon />
 </PerspectiveCamera>

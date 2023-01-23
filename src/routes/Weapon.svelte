@@ -1,14 +1,24 @@
 <script lang="ts">
-	import { Mesh } from '@threlte/core';
+	import { Mesh, useFrame } from '@threlte/core';
 	import * as THREE from 'three';
 	import { SpriteFlipbook } from '../helpers/SpriteFlipbook';
 	import weaponImage from '../images/cropedWeapon.png';
 
 	const tileHoriz = 4;
 	const tileVer = 1;
-	const flipbook = new SpriteFlipbook(weaponImage, tileHoriz, tileVer);
-	const material = flipbook.material;
-	flipbook.loop([0, 1, 2, 3], 1.5);
+	let currentTile = 0;
+	let flipbook;
+	let material: THREE.Material | THREE.Material[];
+
+	useFrame(() => {
+		flipbook = new SpriteFlipbook(weaponImage, tileHoriz, tileVer, currentTile);
+		material = flipbook.material;
+		if (currentTile === 4) {
+			currentTile = 0;
+		} else {
+			currentTile += 1;
+		}
+	});
 </script>
 
 <Mesh

@@ -37,9 +37,15 @@
 	if (!renderer) throw new Error();
 
 	renderer.domElement.addEventListener('click', lockControls);
+	renderer.domElement.addEventListener('click', onMouseClick);
+
+	function onMouseClick() {
+		console.log('dsadsak');
+	}
 
 	onDestroy(() => {
 		renderer.domElement.removeEventListener('click', lockControls);
+		renderer.domElement.removeEventListener('click', onMouseClick);
 	});
 
 	useFrame(() => {

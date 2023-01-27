@@ -28,7 +28,7 @@
 />
 
 <Mesh
-	position={{ y: 0.04, x: 0.93, z: -0.46 }}
+	position={{ y: -0.32, x: 0.8, z: -0.46 }}
 	geometry={new THREE.PlaneGeometry(0.3, 0.3)}
 	material={weaponMaterial}
 />

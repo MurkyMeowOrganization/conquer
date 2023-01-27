@@ -9,21 +9,30 @@
 	export let tileVer: number;
 	export let onAnimationEnd: () => void;
 
-	const { currentFrame, updateTime } = getSpritesheetAnimation({});
-
 	$: texture.repeat.set(1 / tileHoriz, 1 / tileVer);
+	let actualFrame = 0;
+	// Повышая или понижая фреймтайм, можно регулировать скорость анимации
+	const frameTime = 100;
+	let currentTime = 0;
+	useFrame((_, dt) => {
+		if (isAnimating) {
+			currentTime += dt * 1000;
 
-	useFrame((_, dt) => updateTime(dt));
-
-	currentFrame.subscribe((frame) => {
-		const actualFrame = isAnimating ? frame : 0;
-
+			if (currentTime >= frameTime) {
+				actualFrame += 1;
+				if (actualFrame >= 4) {
+					actualFrame = 0;
+					onAnimationEnd();
+				}
+				currentTime = 0;
+			}
+		}
 		const { offsetX, offsetY } = getSpritesheetFrameOffsets(tileHoriz, tileVer, actualFrame);
 
 		texture.offset.x = offsetX;
 		texture.offset.y = offsetY;
 
-		if (actualFrame === 3) {
+		if (actualFrame >= 4) {
 			onAnimationEnd();
 		}
 	});

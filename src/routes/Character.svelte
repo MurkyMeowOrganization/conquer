@@ -15,6 +15,8 @@
 	export let speed = 6;
 	export let jumpStrength = 4;
 
+	let isWeaponAnimating = false;
+
 	let rigidBody;
 	let lock;
 	let cam;
@@ -40,7 +42,7 @@
 	renderer.domElement.addEventListener('click', onMouseClick);
 
 	function onMouseClick() {
-		console.log('dsadsak');
+		isWeaponAnimating = true;
 	}
 
 	onDestroy(() => {
@@ -193,5 +195,5 @@
 		material={spriteMaterial}
 	/>
 	<!-- Weapon -->
-	<Weapon />
+	<Weapon isAnimating={isWeaponAnimating} onAnimationEnd={() => (isWeaponAnimating = false)} />
 </PerspectiveCamera>

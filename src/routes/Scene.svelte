@@ -11,15 +11,19 @@
 
 	const loader = new THREE.TextureLoader();
 	const treeGeometry = new THREE.PlaneGeometry(1, 3, 5, 5);
+	const treeTexture = loader.load(treeImage)
+	treeTexture.magFilter = THREE.NearestFilter
 	const treeMaterial = new THREE.MeshBasicMaterial({
-		map: loader.load(treeImage),
+		map: treeTexture,
 		transparent: true,
-		side: THREE.DoubleSide
+		side: THREE.DoubleSide,
 	});
 
 	const wallGeometry = new THREE.BoxGeometry(7, 4.55, 0.15);
+	const wallTexture = loader.load(wallImage)
+	wallTexture.magFilter = THREE.NearestFilter
 	const wallMaterial = new THREE.MeshBasicMaterial({
-		map: loader.load(wallImage),
+		map: wallTexture,
 		transparent: true
 	});
 </script>

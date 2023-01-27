@@ -10,7 +10,7 @@ export function getSpritesheetAnimation(options: UseSpritesheetAnimationOptions)
 	const updateTime = (dt: number) => {
 		currentTime += dt;
 
-		const frameTime = 0.1;
+		const frameTime = 0.05;
 		const frameCount = 4;
 		const currentValue = Math.floor(currentTime / frameTime) % (frameCount + 1);
 

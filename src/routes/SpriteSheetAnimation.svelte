@@ -23,7 +23,7 @@
 		texture.offset.x = offsetX;
 		texture.offset.y = offsetY;
 
-		if (actualFrame === 4) {
+		if (actualFrame === 3) {
 			onAnimationEnd();
 		}
 	});

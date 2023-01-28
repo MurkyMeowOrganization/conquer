@@ -1,128 +1,128 @@
 <script>
-	import { Mesh, PerspectiveCamera, useFrame, useThrelte } from '@threlte/core';
-	import { Collider, CollisionGroups, RigidBody } from '@threlte/rapier';
-	import { createEventDispatcher, onDestroy } from 'svelte';
-	import * as THREE from 'three';
-	import { Vector3 } from 'three';
-	import PointerLockControls from './PointerLockControls.svelte';
-	import Weapon from './Weapon.svelte';
+  import { Mesh, PerspectiveCamera, useFrame, useThrelte } from '@threlte/core';
+  import { Collider, CollisionGroups, RigidBody } from '@threlte/rapier';
+  import { createEventDispatcher, onDestroy } from 'svelte';
+  import * as THREE from 'three';
+  import { Vector3 } from 'three';
+  import PointerLockControls from './PointerLockControls.svelte';
+  import Weapon from './Weapon.svelte';
 
-	export let position = undefined;
-	export let playerCollisionGroups = [0];
-	export let groundCollisionGroups = [15];
-	export let radius = 0.3;
-	export let height = 1.7;
-	export let speed = 6;
-	export let jumpStrength = 4;
+  export let position = undefined;
+  export let playerCollisionGroups = [0];
+  export let groundCollisionGroups = [15];
+  export let radius = 0.3;
+  export let height = 1.7;
+  export let speed = 6;
+  export let jumpStrength = 4;
 
-	let isWeaponAnimating = false;
+  let isWeaponAnimating = false;
 
-	let rigidBody;
-	let lock;
-	let cam;
+  let rigidBody;
+  let lock;
+  let cam;
 
-	let forward = 0;
-	let backward = 0;
-	let left = 0;
-	let right = 0;
+  let forward = 0;
+  let backward = 0;
+  let left = 0;
+  let right = 0;
 
-	const t = new Vector3();
+  const t = new Vector3();
 
-	const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher();
 
-	let grounded = false;
-	$: grounded ? dispatch('groundenter') : dispatch('groundexit');
+  let grounded = false;
+  $: grounded ? dispatch('groundenter') : dispatch('groundexit');
 
-	const lockControls = () => lock();
+  const lockControls = () => lock();
 
-	const { renderer } = useThrelte();
-	if (!renderer) throw new Error();
+  const { renderer } = useThrelte();
+  if (!renderer) throw new Error();
 
-	renderer.domElement.addEventListener('click', lockControls);
-	renderer.domElement.addEventListener('click', onMouseClick);
+  renderer.domElement.addEventListener('click', lockControls);
+  renderer.domElement.addEventListener('click', onMouseClick);
 
-	function onMouseClick() {
-		isWeaponAnimating = true;
-	}
+  function onMouseClick() {
+    isWeaponAnimating = true;
+  }
 
-	onDestroy(() => {
-		renderer.domElement.removeEventListener('click', lockControls);
-		renderer.domElement.removeEventListener('click', onMouseClick);
-	});
+  onDestroy(() => {
+    renderer.domElement.removeEventListener('click', lockControls);
+    renderer.domElement.removeEventListener('click', onMouseClick);
+  });
 
-	useFrame(() => {
-		if (!rigidBody) return;
-		// get direction
-		const velVec = t.fromArray([right - left, 0, backward - forward]);
-		// sort rotate and multiply by speed
-		velVec.applyEuler(cam.rotation).multiplyScalar(speed);
-		// don't override falling velocity
-		const linVel = rigidBody.linvel();
-		t.y = linVel.y;
-		// finally set the velocities and wake up the body
-		rigidBody.setLinvel(t, true);
+  useFrame(() => {
+    if (!rigidBody) return;
+    // get direction
+    const velVec = t.fromArray([right - left, 0, backward - forward]);
+    // sort rotate and multiply by speed
+    velVec.applyEuler(cam.rotation).multiplyScalar(speed);
+    // don't override falling velocity
+    const linVel = rigidBody.linvel();
+    t.y = linVel.y;
+    // finally set the velocities and wake up the body
+    rigidBody.setLinvel(t, true);
 
-		// when body position changes update position prop for camera
-		const pos = rigidBody.translation();
-		position = { x: pos.x, y: pos.y, z: pos.z };
-	});
+    // when body position changes update position prop for camera
+    const pos = rigidBody.translation();
+    position = { x: pos.x, y: pos.y, z: pos.z };
+  });
 
-	/** @param {KeyboardEvent} e */
-	function onKeyDown(e) {
-		switch (e.key) {
-			case 's':
-				backward = 1;
-				break;
-			case 'w':
-				forward = 1;
-				break;
-			case 'a':
-				left = 1;
-				break;
-			case 'd':
-				right = 1;
-				break;
+  /** @param {KeyboardEvent} e */
+  function onKeyDown(e) {
+    switch (e.key) {
+      case 's':
+        backward = 1;
+        break;
+      case 'w':
+        forward = 1;
+        break;
+      case 'a':
+        left = 1;
+        break;
+      case 'd':
+        right = 1;
+        break;
 
-			default:
-				break;
-		}
-	}
+      default:
+        break;
+    }
+  }
 
-	/** @param {KeyboardEvent} e */
-	function onKeyUp(e) {
-		switch (e.key) {
-			case 's':
-				backward = 0;
-				break;
-			case 'w':
-				forward = 0;
-				break;
-			case 'a':
-				left = 0;
-				break;
-			case 'd':
-				right = 0;
-				break;
-			default:
-				break;
-		}
-	}
+  /** @param {KeyboardEvent} e */
+  function onKeyUp(e) {
+    switch (e.key) {
+      case 's':
+        backward = 0;
+        break;
+      case 'w':
+        forward = 0;
+        break;
+      case 'a':
+        left = 0;
+        break;
+      case 'd':
+        right = 0;
+        break;
+      default:
+        break;
+    }
+  }
 
-	const spriteMaterial = new THREE.ShaderMaterial({
-		uniforms: {
-			main_color: { value: { r: 1, g: 1, b: 1 } },
-			border_color: { value: { r: 0, g: 0, b: 0.1 } },
+  const spriteMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+      main_color: { value: { r: 1, g: 1, b: 1 } },
+      border_color: { value: { r: 0, g: 0, b: 0.1 } },
 
-			thickness: { value: 0.006 },
-			height: { value: 0.13 },
-			offset: { value: 0.05 },
-			border: { value: 0.003 },
+      thickness: { value: 0.006 },
+      height: { value: 0.13 },
+      offset: { value: 0.05 },
+      border: { value: 0.003 },
 
-			opacity: { value: 1 },
-			center: { value: { x: 0.5, y: 0.5 } },
-			rotation: { value: 0 }
-		},
-		vertexShader: `
+      opacity: { value: 1 },
+      center: { value: { x: 0.5, y: 0.5 } },
+      rotation: { value: 0 },
+    },
+    vertexShader: `
 								uniform float rotation;
 								uniform vec2 center;
 								#include <common>
@@ -145,7 +145,7 @@
 										gl_Position = projectionMatrix * mvPosition;
 								}
 						`,
-		fragmentShader: `
+    fragmentShader: `
 						uniform vec3 main_color;
 						uniform vec3 border_color;
 						uniform float opacity;
@@ -163,37 +163,37 @@
 								gl_FragColor = vec4( mix(border_color, main_color, b), a * opacity);
 						}
 				`,
-		transparent: true
-	});
+    transparent: true,
+  });
 </script>
 
 <svelte:window on:keydown={onKeyDown} on:keyup={onKeyUp} />
 
-<RigidBody bind:rigidBody {position} enabledRotations={[false, false, false]}>
-	<CollisionGroups groups={playerCollisionGroups}>
-		<Collider shape={'capsule'} args={[height / 2 - radius, radius]} />
-	</CollisionGroups>
+<RigidBody bind:rigidBody={rigidBody} position={position} enabledRotations={[false, false, false]}>
+  <CollisionGroups groups={playerCollisionGroups}>
+    <Collider shape={'capsule'} args={[height / 2 - radius, radius]} />
+  </CollisionGroups>
 
-	<CollisionGroups groups={groundCollisionGroups}>
-		<Collider
-			sensor
-			on:sensorenter={() => (grounded = true)}
-			on:sensorexit={() => (grounded = false)}
-			shape={'ball'}
-			args={[radius * 1.2]}
-			position={{ y: -height / 2 + radius }}
-		/>
-	</CollisionGroups>
+  <CollisionGroups groups={groundCollisionGroups}>
+    <Collider
+      sensor
+      on:sensorenter={() => (grounded = true)}
+      on:sensorexit={() => (grounded = false)}
+      shape={'ball'}
+      args={[radius * 1.2]}
+      position={{ y: -height / 2 + radius }}
+    />
+  </CollisionGroups>
 </RigidBody>
 
-<PerspectiveCamera bind:camera={cam} bind:position fov={90}>
-	<PointerLockControls bind:lock />
-	<!-- CrossHair -->
-	<Mesh
-		position={{ z: -0.15 }}
-		geometry={new THREE.PlaneGeometry(1, 1)}
-		material={spriteMaterial}
-	/>
-	<!-- Weapon -->
-	<Weapon isAnimating={isWeaponAnimating} onAnimationEnd={() => (isWeaponAnimating = false)} />
+<PerspectiveCamera bind:camera={cam} bind:position={position} fov={90}>
+  <PointerLockControls bind:lock={lock} />
+  <!-- CrossHair -->
+  <Mesh
+    position={{ z: -0.15 }}
+    geometry={new THREE.PlaneGeometry(1, 1)}
+    material={spriteMaterial}
+  />
+  <!-- Weapon -->
+  <Weapon isAnimating={isWeaponAnimating} onAnimationEnd={() => (isWeaponAnimating = false)} />
 </PerspectiveCamera>

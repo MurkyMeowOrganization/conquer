@@ -1,0 +1,57 @@
+varying vec2 vUv;
+
+uniform float iTime;
+
+# define pi 3.14159265359
+
+// Create a circle at pos with color "circlecol" and backgroundcolor "backcol"
+vec3 circle(in vec2 uv, in vec2 pos, in float size, in float feather, in vec3 backcol, in vec3 circlecol) {
+  float dist = distance(uv, pos) - size;
+  return mix(circlecol, backcol, smoothstep(0.0, feather, dist));
+}
+
+// Replace color "replace" with color "replacewith" in "col"
+void replace(inout vec3 col, in vec3 replace, in vec3 replacewith) {
+  col += mix(col, replacewith, step(replace,col));
+}
+
+float random( vec2 pos, float seed ){
+  return fract( sin( dot( pos + seed, vec2( 12.9898, 78.233 ) ) ) * 43758.5453 + seed ) ;
+}
+
+void main() {
+  // Normalized pixel coordinates (from 0 to 1)
+  vec2 uv = vUv * 2.0 - 1.0;
+
+  // Control time of day (-1 if day, 1 if night)
+  float timeofday = sin(pi/2.0 * cos((iTime + pi) / 2.0));
+  float celestialpos = abs(timeofday) - 0.5;
+
+  // Rotate sky and get noise from texture
+  mat2 skyrot = mat2(cos(iTime * pi / 25.0), sin(iTime * pi / 25.0), -sin(iTime * pi / 25.0), cos(iTime * pi / 25.0));
+  float noise = random( uv , 0.0 ) * 0.985;
+  // float noise = texture(iChannel0,skyrot * vec2(uv.x, uv.y + 0.8)).r*1.5;
+
+  // Draw sky blue if day, black if night
+  vec3 day = vec3(0.1, 0.6, 0.9);
+  vec3 night = vec3(0.0);
+
+  // Draw stars during night
+  night = mix(night, vec3(0.42 + uv.x / 10.0, 0.42 + uv.y / 10.0, 0.4), smoothstep(0.95, 1.0 ,noise));
+
+  // Set skycolor depending on time of day
+  vec3 skycol = mix(day, night, smoothstep(-0.4, 0.2, timeofday));
+
+  // Draw celestial body yellow if day, bluewhite if night
+  vec3 yellow = vec3(1.0, 1.0, 0.0);
+  vec3 bluewhite = vec3(0.75, 0.85, 1.0);
+  vec3 celecol = mix(yellow, bluewhite, smoothstep(-1.0, 1.0, timeofday));
+
+  // Create celestial body
+  vec3 col = circle(uv, vec2((mod(iTime, 2.0 * pi) - pi) / pi,celestialpos - 0.3), 0.01, 0.01, skycol, celecol);
+
+  // Brightness at day, dark at night
+  float brightness = smoothstep(0.1, -0.4, timeofday);
+
+  gl_FragColor = vec4(col,1.0);
+}

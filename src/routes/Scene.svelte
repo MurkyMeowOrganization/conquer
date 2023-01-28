@@ -2,7 +2,7 @@
   import { AmbientLight, DirectionalLight, Mesh, Three, useFrame } from '@threlte/core';
   import { AutoColliders, CollisionGroups } from '@threlte/rapier';
   import * as THREE from 'three';
-  import { Sky } from '../features/day-and-night-cycle';
+  import { SkyMesh } from '../features/day-and-night-cycle';
   import treeImage from '../images/tree.png';
   import wallImage from '../images/wall.png';
 
@@ -27,7 +27,7 @@
     transparent: true,
   });
 
-  const sky = new Sky();
+  const sky = new SkyMesh();
 
   let time = 0;
 

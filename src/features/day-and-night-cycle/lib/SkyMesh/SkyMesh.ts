@@ -1,8 +1,8 @@
 import { BackSide, Mesh, ShaderMaterial, SphereGeometry } from 'three';
-import fragmentShader from './Sky.fragment.glslx?raw';
-import vertexShader from './Sky.vertex.glslx?raw';
+import fragmentShader from './SkyMesh.fragment.glslx?raw';
+import vertexShader from './SkyMesh.vertex.glslx?raw';
 
-export class Sky extends Mesh {
+export class SkyMesh extends Mesh {
   _material: ShaderMaterial;
 
   constructor() {

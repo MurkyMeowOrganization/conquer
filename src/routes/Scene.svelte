@@ -2,7 +2,7 @@
   import { AmbientLight, DirectionalLight, Mesh, Three, useFrame } from '@threlte/core';
   import { AutoColliders, CollisionGroups } from '@threlte/rapier';
   import * as THREE from 'three';
-  import { SkyMesh } from '../features/day-and-night-cycle';
+  import { Sky } from '../features/day-and-night-cycle';
   import treeImage from '../images/tree.png';
   import wallImage from '../images/wall.png';
 
@@ -26,22 +26,12 @@
     map: wallTexture,
     transparent: true,
   });
-
-  const sky = new SkyMesh();
-
-  let time = 0;
-
-  useFrame((_, dt) => {
-    time += dt;
-
-    sky.update(time + 10);
-  });
 </script>
 
 <DirectionalLight shadow position={{ y: 20, x: 8, z: -3 }} />
 <AmbientLight intensity={0.2} />
 
-<Three type={sky} />
+<Sky />
 
 <CollisionGroups groups={[0, 15]}>
   <AutoColliders shape={'cuboid'} position={{ y: -0.5 }}>

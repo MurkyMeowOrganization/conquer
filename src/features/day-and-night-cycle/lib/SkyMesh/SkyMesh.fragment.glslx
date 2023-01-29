@@ -24,7 +24,7 @@ void main() {
   vec2 uv = vUv * 2.0 - 1.0;
 
   // Control time of day (-1 if day, 1 if night)
-  float timeofday = sin(pi/2.0 * cos((iTime + pi) / 2.0));
+  float timeofday = sin(pi/2.0 * cos(iTime * pi));
   float celestialpos = abs(timeofday) - 0.5;
 
   // Rotate sky and get noise from texture

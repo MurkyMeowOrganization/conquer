@@ -1,9 +1,11 @@
 <script>
-	import { PerspectiveCamera, useFrame, useThrelte } from '@threlte/core';
+	import { Mesh, PerspectiveCamera, useFrame, useThrelte } from '@threlte/core';
 	import { Collider, CollisionGroups, RigidBody } from '@threlte/rapier';
 	import { createEventDispatcher, onDestroy } from 'svelte';
+	import * as THREE from 'three';
 	import { Vector3 } from 'three';
 	import PointerLockControls from './PointerLockControls.svelte';
+	import Weapon from './Weapon.svelte';
 
 	export let position = undefined;
 	export let playerCollisionGroups = [0];
@@ -12,6 +14,8 @@
 	export let height = 1.7;
 	export let speed = 6;
 	export let jumpStrength = 4;
+
+	let isWeaponAnimating = false;
 
 	let rigidBody;
 	let lock;
@@ -35,9 +39,15 @@
 	if (!renderer) throw new Error();
 
 	renderer.domElement.addEventListener('click', lockControls);
+	renderer.domElement.addEventListener('click', onMouseClick);
+
+	function onMouseClick() {
+		isWeaponAnimating = true;
+	}
 
 	onDestroy(() => {
 		renderer.domElement.removeEventListener('click', lockControls);
+		renderer.domElement.removeEventListener('click', onMouseClick);
 	});
 
 	useFrame(() => {
@@ -178,10 +188,12 @@
 
 <PerspectiveCamera bind:camera={cam} bind:position fov={90}>
 	<PointerLockControls bind:lock />
-
+	<!-- CrossHair -->
 	<Mesh
 		position={{ z: -0.15 }}
 		geometry={new THREE.PlaneGeometry(1, 1)}
 		material={spriteMaterial}
 	/>
+	<!-- Weapon -->
+	<Weapon isAnimating={isWeaponAnimating} onAnimationEnd={() => (isWeaponAnimating = false)} />
 </PerspectiveCamera>

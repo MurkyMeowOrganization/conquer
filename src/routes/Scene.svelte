@@ -8,16 +8,22 @@
 
 	import Player from './Character.svelte';
 	import Door from './Door.svelte';
+
 	const loader = new THREE.TextureLoader();
-	const treeGeometry = new THREE.PlaneGeometry(0.5, 2, 5, 5);
+	const treeGeometry = new THREE.PlaneGeometry(1, 3, 5, 5);
+	const treeTexture = loader.load(treeImage)
+	treeTexture.magFilter = THREE.NearestFilter
 	const treeMaterial = new THREE.MeshBasicMaterial({
-		map: loader.load(treeImage),
-		transparent: true
+		map: treeTexture,
+		transparent: true,
+		side: THREE.DoubleSide,
 	});
 
 	const wallGeometry = new THREE.BoxGeometry(7, 4.55, 0.15);
+	const wallTexture = loader.load(wallImage)
+	wallTexture.magFilter = THREE.NearestFilter
 	const wallMaterial = new THREE.MeshBasicMaterial({
-		map: loader.load(wallImage),
+		map: wallTexture,
 		transparent: true
 	});
 </script>
@@ -84,9 +90,8 @@
 		/>
 
 		<!-- Tree -->
-		<Mesh position={{ y: 1, x: 0, z: 1 }} geometry={treeGeometry} material={treeMaterial} />
+		<Mesh position={{ y: 1.6, x: -4, z: -3 }} geometry={treeGeometry} material={treeMaterial} />
 	</AutoColliders>
 
 	<Player position={{ z: 2 }} />
-
 </CollisionGroups>

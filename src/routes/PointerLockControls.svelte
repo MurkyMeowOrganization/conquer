@@ -77,5 +77,3 @@
 		console.error('PointerLockControls: Unable to use Pointer Lock API');
 	}
 </script>
-
-.

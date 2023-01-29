@@ -1,1 +1,1 @@
-export { SkyMesh } from './lib/SkyMesh';
+export { Sky } from './lib/Sky';

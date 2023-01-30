@@ -4,6 +4,7 @@
   import { createEventDispatcher, onDestroy } from 'svelte';
   import * as THREE from 'three';
   import { Vector3 } from 'three';
+  import { Fireball } from '../features/fireball';
   import PointerLockControls from './PointerLockControls.svelte';
   import Weapon from './Weapon.svelte';
 
@@ -168,6 +169,7 @@
 </script>
 
 <svelte:window on:keydown={onKeyDown} on:keyup={onKeyUp} />
+<Fireball />
 
 <RigidBody bind:rigidBody={rigidBody} position={position} enabledRotations={[false, false, false]}>
   <CollisionGroups groups={playerCollisionGroups}>
@@ -194,6 +196,7 @@
     geometry={new THREE.PlaneGeometry(1, 1)}
     material={spriteMaterial}
   />
+
   <!-- Weapon -->
   <Weapon isAnimating={isWeaponAnimating} onAnimationEnd={() => (isWeaponAnimating = false)} />
 </PerspectiveCamera>

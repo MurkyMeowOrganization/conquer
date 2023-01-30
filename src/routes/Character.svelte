@@ -18,6 +18,8 @@
 
   let isWeaponAnimating = false;
 
+  let isAnimatingFireball = false;
+
   let rigidBody;
   let lock;
   let cam;
@@ -44,6 +46,7 @@
 
   function onMouseClick() {
     isWeaponAnimating = true;
+    isAnimatingFireball = true;
   }
 
   onDestroy(() => {
@@ -169,7 +172,7 @@
 </script>
 
 <svelte:window on:keydown={onKeyDown} on:keyup={onKeyUp} />
-<Fireball />
+<Fireball isAnimating={isAnimatingFireball}  onAnimationEnd={() => (isAnimatingFireball = false)}/>
 
 <RigidBody bind:rigidBody={rigidBody} position={position} enabledRotations={[false, false, false]}>
   <CollisionGroups groups={playerCollisionGroups}>

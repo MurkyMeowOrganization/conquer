@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { useFrame } from '@threlte/core';
 	import { getSpritesheetFrameOffsets } from '../helpers/getSpritesheetFrameOffsets';
-	import { getSpritesheetAnimation } from './getSpritesheetAnimation';
 
 	export let isAnimating: boolean;
 	export let texture: THREE.Texture;

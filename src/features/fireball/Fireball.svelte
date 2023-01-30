@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte';
-  import { Three, useFrame } from '@threlte/core';
+  import { Three, useFrame, PositionalAudio } from '@threlte/core';
   import { Collider } from '@threlte/rapier';
   import * as THREE from 'three';
 
@@ -22,21 +21,10 @@
   useFrame((_, dt) => {
     position = position.add(getFireballShift(direction, SPEED, dt));
   });
-
-  const audio = new Audio();
-  audio.src = castSound;
-  audio.play();
-
-  onDestroy(() => {
-    audio.pause();
-  });
 </script>
 
-<Three type={fireballMesh} position={[position.x, position.y, position.z]} />
+<Three type={fireballMesh} position={[position.x, position.y, position.z]}>
+  <PositionalAudio source={castSound} autoplay />
 
-<Collider
-  shape="cuboid"
-  position={position}
-  args={[SIZE, SIZE, SIZE]}
-  on:collisionenter={onCollide}
-/>
+  <Collider shape="cuboid" args={[SIZE, SIZE, SIZE]} on:collisionenter={onCollide} />
+</Three>

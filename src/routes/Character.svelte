@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { Mesh, PerspectiveCamera, useFrame, useThrelte } from '@threlte/core';
   import { Collider, CollisionGroups, RigidBody } from '@threlte/rapier';
   import { createEventDispatcher, onDestroy } from 'svelte';
@@ -8,7 +8,9 @@
   import PointerLockControls from './PointerLockControls.svelte';
   import Weapon from './Weapon.svelte';
 
-  export let position = undefined;
+  let fireballs: { initialPosition: THREE.Vector3; direction: THREE.Vector3 }[] = [];
+
+  export let position: THREE.Vector3;
   export let playerCollisionGroups = [0];
   export let groundCollisionGroups = [15];
   export let radius = 0.3;
@@ -22,7 +24,7 @@
 
   let rigidBody;
   let lock;
-  let cam;
+  let cam: THREE.PerspectiveCamera;
 
   let forward = 0;
   let backward = 0;
@@ -47,6 +49,24 @@
   function onMouseClick() {
     isWeaponAnimating = true;
     isAnimatingFireball = true;
+
+    addFireball();
+  }
+
+  function addFireball() {
+    const direction = new THREE.Vector3();
+    cam.getWorldDirection(direction);
+
+    const initialPosition = new THREE.Vector3(position.x, position.y, position.z);
+    // сдвигаем файрболл чуть вперед, чтобы он не сталкивался с игроком
+    initialPosition.add(direction);
+
+    fireballs = [...fireballs, { initialPosition, direction }];
+  }
+
+  function onFileballCollide(index: number) {
+    console.log('onFileballCollide');
+    fireballs = fireballs.filter((_, i) => i !== index);
   }
 
   onDestroy(() => {
@@ -172,7 +192,14 @@
 </script>
 
 <svelte:window on:keydown={onKeyDown} on:keyup={onKeyUp} />
-<Fireball isAnimating={isAnimatingFireball}  onAnimationEnd={() => (isAnimatingFireball = false)}/>
+
+{#each fireballs as { initialPosition, direction }, index}
+  <Fireball
+    initialPosition={initialPosition}
+    direction={direction}
+    onCollide={() => onFileballCollide(index)}
+  />
+{/each}
 
 <RigidBody bind:rigidBody={rigidBody} position={position} enabledRotations={[false, false, false]}>
   <CollisionGroups groups={playerCollisionGroups}>

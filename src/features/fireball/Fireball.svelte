@@ -1,10 +1,13 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte';
   import { Three, useFrame } from '@threlte/core';
   import { Collider } from '@threlte/rapier';
   import * as THREE from 'three';
 
   import { getFireballMesh } from './lib/getFireballMesh';
   import { getFireballShift } from './lib/getFireballShift';
+
+  import castSound from './sound/fireball_cast.mp3';
 
   export let initialPosition: THREE.Vector3;
   export let direction: THREE.Vector3;
@@ -18,6 +21,14 @@
 
   useFrame((_, dt) => {
     position = position.add(getFireballShift(direction, SPEED, dt));
+  });
+
+  const audio = new Audio();
+  audio.src = castSound;
+  audio.play();
+
+  onDestroy(() => {
+    audio.pause();
   });
 </script>
 

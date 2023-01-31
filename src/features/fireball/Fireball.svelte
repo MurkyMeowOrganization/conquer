@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Three, useFrame, PositionalAudio } from '@threlte/core';
+  import { PositionalAudio, Three, useFrame } from '@threlte/core';
   import { Collider } from '@threlte/rapier';
   import * as THREE from 'three';
 
@@ -13,7 +13,7 @@
   export let onCollide: () => void;
 
   const SIZE = 0.3;
-  const SPEED = 3;
+  const SPEED = 8;
   const fireballMesh = getFireballMesh(SIZE);
 
   let position = new THREE.Vector3(initialPosition.x, initialPosition.y, initialPosition.z);

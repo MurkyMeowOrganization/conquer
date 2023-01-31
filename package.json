@@ -41,6 +41,7 @@
 	"type": "module",
 	"dependencies": {
 		"@tweakpane/core": "^1.1.1",
+		"locally-unique-id-generator": "^0.1.5",
 		"tweakpane": "^3.1.1"
 	}
 }

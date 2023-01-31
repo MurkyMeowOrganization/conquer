@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { Mesh, PerspectiveCamera, useFrame, useThrelte, AudioListener } from '@threlte/core';
+  import { AudioListener, Mesh, PerspectiveCamera, useFrame, useThrelte } from '@threlte/core';
   import { Collider, CollisionGroups, RigidBody } from '@threlte/rapier';
+  import newUniqueId from 'locally-unique-id-generator';
   import { createEventDispatcher, onDestroy } from 'svelte';
   import * as THREE from 'three';
   import { Vector3 } from 'three';
@@ -8,7 +9,7 @@
   import PointerLockControls from './PointerLockControls.svelte';
   import Weapon from './Weapon.svelte';
 
-  let fireballs: { initialPosition: THREE.Vector3; direction: THREE.Vector3 }[] = [];
+  let fireballs: { initialPosition: THREE.Vector3; direction: THREE.Vector3; id: string }[] = [];
 
   export let position: THREE.Vector3;
   export let playerCollisionGroups = [0];
@@ -61,12 +62,12 @@
     // сдвигаем файрболл чуть вперед, чтобы он не сталкивался с игроком
     initialPosition.add(direction);
 
-    fireballs = [...fireballs, { initialPosition, direction }];
+    fireballs = [...fireballs, { initialPosition, direction, id: newUniqueId() }];
   }
 
-  function onFileballCollide(index: number) {
-    console.log('onFileballCollide');
-    fireballs = fireballs.filter((_, i) => i !== index);
+  function onFireballCollide(_id: string) {
+    console.log('onFireballCollide');
+    fireballs = fireballs.filter(({ id }) => id !== _id);
   }
 
   onDestroy(() => {
@@ -193,11 +194,11 @@
 
 <svelte:window on:keydown={onKeyDown} on:keyup={onKeyUp} />
 
-{#each fireballs as { initialPosition, direction }, index}
+{#each fireballs as { initialPosition, direction, id }}
   <Fireball
     initialPosition={initialPosition}
     direction={direction}
-    onCollide={() => onFileballCollide(index)}
+    onCollide={() => onFireballCollide(id)}
   />
 {/each}
 

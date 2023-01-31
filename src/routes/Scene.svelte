@@ -1,6 +1,7 @@
 <script>
   import { AmbientLight, AudioListener, DirectionalLight, Mesh } from '@threlte/core';
   import { AutoColliders, CollisionGroups } from '@threlte/rapier';
+  import Wind from '../features/wind/Wind/Wind.svelte';
   import * as THREE from 'three';
   import { Terrain } from 'src/features/terrain';
   import { Sky } from '../features/day-and-night-cycle';
@@ -37,6 +38,8 @@
 <Sky />
 
 <Terrain />
+
+<Wind />
 
 <CollisionGroups groups={[0]}>
   <Door />

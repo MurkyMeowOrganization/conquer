@@ -1,0 +1,72 @@
+varying vec2 vUv;
+
+uniform float iTime;
+uniform float pixelization;
+uniform sampler2D tex;
+
+vec2 pixelate(vec2 uv, float amount) {
+  return floor(uv * amount) / amount;
+}
+
+vec2 random2(vec2 p) {
+  return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453);
+}
+
+vec4 voronoi(vec2 uv) {
+  vec4 color = vec4(.0);
+
+  // Scale
+  uv *= 15.0;
+
+  // Tile the space
+  vec2 i_st = floor(uv);
+  vec2 f_st = fract(uv);
+
+  float m_dist = 1.;  // minimum distance
+
+  for (int y= -1; y <= 1; y++) {
+    for (int x= -1; x <= 1; x++) {
+      // Neighbor place in the grid
+      vec2 neighbor = vec2(float(x),float(y));
+
+      // Random position from current + neighbor place in the grid
+      vec2 point = random2(i_st + neighbor);
+
+      // Animate the point
+      point = 0.5 + 0.5 * sin(iTime + 6.2831 * point);
+
+      // Vector between the pixel and the point
+      vec2 diff = neighbor + point - f_st;
+
+      // Distance to the point
+      float dist = length(diff);
+
+      // Keep the closer distance
+      m_dist = min(m_dist, dist);
+    }
+  }
+
+  // Draw the min distance (distance field)
+  color += m_dist;
+
+  return color;
+}
+
+vec4 overlay(vec4 base, vec4 blend) {
+	vec4 limit = step(0.5, base);
+	return mix(2.0 * base * blend, 1.0 - 2.0 * (1.0 - base) * (1.0 - blend), limit);
+}
+
+void main() {
+  vec2 pixelatedUv = pixelate(vUv, pixelization);
+
+  vec4 texColor = texture2D(tex, pixelatedUv);
+  vec4 noiseColor = voronoi(pixelatedUv);
+
+  // gl_FragColor = vec4(vUv.x, 0.0, 0.0, 1.0);
+
+  // gl_FragColor = noiseColor;
+
+  gl_FragColor = overlay(texColor, noiseColor);
+  // gl_FragColor = overlay(noiseColor, texColor);
+}

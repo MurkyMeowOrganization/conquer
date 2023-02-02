@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { PositionalAudio, Three, useFrame } from '@threlte/core';
-  import { Collider } from '@threlte/rapier';
+  import { PositionalAudio, Three } from '@threlte/core';
+  import { Collider, RigidBody } from '@threlte/rapier';
   import * as THREE from 'three';
 
   import { getFireballMesh } from './lib/getFireballMesh';
-  import { getFireballShift } from './lib/getFireballShift';
 
   import castSound from './sound/fireball_cast.mp3';
 
@@ -16,15 +15,13 @@
   const SPEED = 8;
   const fireballMesh = getFireballMesh(SIZE);
 
-  let position = new THREE.Vector3(initialPosition.x, initialPosition.y, initialPosition.z);
-
-  useFrame((_, dt) => {
-    position = position.add(getFireballShift(direction, SPEED, dt));
-  });
+  const velocity = new THREE.Vector3(direction.x, direction.y, direction.z).multiplyScalar(SPEED);
 </script>
 
-<Three type={fireballMesh} position={[position.x, position.y, position.z]}>
-  <PositionalAudio source={castSound} autoplay />
+<RigidBody position={initialPosition} linearVelocity={velocity} type="kinematicVelocity">
+  <Three type={fireballMesh}>
+    <PositionalAudio source={castSound} autoplay />
 
-  <Collider shape="cuboid" args={[SIZE, SIZE, SIZE]} on:collisionenter={onCollide} />
-</Three>
+    <Collider shape="cuboid" args={[SIZE, SIZE, SIZE]} on:collisionenter={onCollide} />
+  </Three>
+</RigidBody>

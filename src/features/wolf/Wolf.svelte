@@ -1,13 +1,19 @@
 <script lang="ts">
   import { Three } from '@threlte/core';
-  import { AutoColliders, RigidBody } from '@threlte/rapier';
+  import { Collider } from '@threlte/rapier';
   import { getWolfMesh } from './lib/getWolfMesh';
-
   const wolfMesh = getWolfMesh();
 </script>
 
-<RigidBody>
-  <AutoColliders shape={'cuboid'}>
-    <Three type={wolfMesh} position={[2, 0.9, -5]} />
-  </AutoColliders>
-</RigidBody>
+<Three type={wolfMesh} position={[2, 0.9, -5]}>
+  <Collider
+    shape={'cuboid'}
+    args={[0.5, 0.5, 0.5]}
+    on:collisionenter={() => {
+      console.log('123312');
+    }}
+    on:collisionexit={() => {
+      console.log('123');
+    }}
+  />
+</Three>

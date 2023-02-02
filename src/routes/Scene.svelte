@@ -1,11 +1,12 @@
 <script>
-  import { AmbientLight, DirectionalLight, Mesh, Three, useFrame } from '@threlte/core';
+  import { AmbientLight, DirectionalLight, Mesh } from '@threlte/core';
   import { AutoColliders, CollisionGroups } from '@threlte/rapier';
   import * as THREE from 'three';
   import { Sky } from '../features/day-and-night-cycle';
   import treeImage from '../images/tree.png';
   import wallImage from '../images/wall.png';
 
+  import Wolf from '../features/wolf/Wolf.svelte';
   import Player from './Character.svelte';
   import Door from './Door.svelte';
 
@@ -90,7 +91,8 @@
       geometry={wallGeometry}
       material={wallMaterial}
     />
-
+    <!-- Wolf -->
+    <Wolf />
     <!-- Tree -->
     <Mesh position={{ y: 1.6, x: -4, z: -3 }} geometry={treeGeometry} material={treeMaterial} />
   </AutoColliders>

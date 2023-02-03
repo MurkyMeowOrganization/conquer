@@ -2,9 +2,9 @@ import * as THREE from 'three';
 import impImage from '../img/imp-sprite-image.png';
 
 export function getImpMesh(): THREE.Mesh {
-  let currentTile = 6;
-  let tilesHoriz = 11;
-  let tilesVert = 7;
+  let currentTile = 0;
+  let tilesHoriz = 10;
+  let tilesVert = 6;
   const loader = new THREE.TextureLoader();
   const impTexture = loader.load(impImage);
   impTexture.repeat.set(1 / tilesHoriz, 1 / tilesVert)

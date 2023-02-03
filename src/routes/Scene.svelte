@@ -2,6 +2,7 @@
   import { AmbientLight, DirectionalLight, Mesh } from '@threlte/core';
   import { AutoColliders, CollisionGroups } from '@threlte/rapier';
   import * as THREE from 'three';
+  import { Terrain } from 'src/features/terrain';
   import { Sky } from '../features/day-and-night-cycle';
   import treeImage from '../images/tree.png';
   import wallImage from '../images/wall.png';
@@ -43,6 +44,8 @@
     />
   </AutoColliders>
 </CollisionGroups>
+
+<Terrain />
 
 <CollisionGroups groups={[0]}>
   <Door />

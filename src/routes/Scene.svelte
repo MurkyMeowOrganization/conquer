@@ -6,6 +6,7 @@
   import treeImage from '../images/tree.png';
   import wallImage from '../images/wall.png';
 
+  import Imp from '../features/imp/Imp.svelte';
   import Wolf from '../features/wolf/Wolf.svelte';
   import Player from './Character.svelte';
   import Door from './Door.svelte';
@@ -94,6 +95,7 @@
     <!-- Wolf -->
     <Wolf />
     <!-- Tree -->
+    <Imp />
     <Mesh position={{ y: 1.6, x: -4, z: -3 }} geometry={treeGeometry} material={treeMaterial} />
   </AutoColliders>
 

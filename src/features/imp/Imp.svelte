@@ -3,7 +3,6 @@
   import { Collider } from '@threlte/rapier';
   import { getImpMesh } from './lib/getImpMesh';
   import castSound from './sound/imp-injured.mp3';
-  let started = false;
   const impMesh = getImpMesh();
 
   const impInjuredAudio = new Audio();

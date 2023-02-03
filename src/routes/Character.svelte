@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { AudioListener, Mesh, PerspectiveCamera, useFrame, useThrelte } from '@threlte/core';
+  import { Mesh, PerspectiveCamera, useFrame, useThrelte } from '@threlte/core';
   import { Collider, CollisionGroups, RigidBody } from '@threlte/rapier';
   import newUniqueId from 'locally-unique-id-generator';
   import { createEventDispatcher, onDestroy } from 'svelte';
@@ -221,9 +221,6 @@
 
 <PerspectiveCamera bind:camera={cam} bind:position={position} fov={90}>
   <PointerLockControls bind:lock={lock} />
-
-  <!-- Audio listener -->
-  <AudioListener />
 
   <!-- CrossHair -->
   <Mesh

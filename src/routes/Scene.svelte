@@ -1,5 +1,5 @@
 <script>
-  import { AmbientLight, DirectionalLight, Mesh } from '@threlte/core';
+  import { AmbientLight, AudioListener, DirectionalLight, Mesh } from '@threlte/core';
   import { AutoColliders, CollisionGroups } from '@threlte/rapier';
   import * as THREE from 'three';
   import { Sky } from '../features/day-and-night-cycle';
@@ -94,8 +94,11 @@
     />
     <!-- Wolf -->
     <Wolf />
-    <!-- Tree -->
+    <!-- Audio listener -->
+    <AudioListener />
+    <!-- Imp -->
     <Imp />
+    <!-- Tree -->
     <Mesh position={{ y: 1.6, x: -4, z: -3 }} geometry={treeGeometry} material={treeMaterial} />
   </AutoColliders>
 

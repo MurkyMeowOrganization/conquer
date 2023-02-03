@@ -1,20 +1,26 @@
 <script>
-  import { Three } from '@threlte/core';
+  import { PositionalAudio, Three } from '@threlte/core';
   import { Collider } from '@threlte/rapier';
   import { getImpMesh } from './lib/getImpMesh';
-
+  import castSound from './sound/imp-injured.mp3';
+  let started = false;
   const impMesh = getImpMesh();
+
+  const impInjuredAudio = new Audio();
+  impInjuredAudio.src = castSound;
+
+  function impInjured() {
+    impInjuredAudio.play();
+  }
 </script>
 
 <Three type={impMesh} position={[5, 0.9, -5]}>
+  <PositionalAudio source={castSound} />
   <Collider
     shape={'cuboid'}
     args={[0.5, 0.5, 0.5]}
     on:collisionenter={() => {
-      console.log('123312');
-    }}
-    on:collisionexit={() => {
-      console.log('123');
+      impInjured();
     }}
   />
 </Three>

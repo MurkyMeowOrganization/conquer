@@ -1,9 +1,41 @@
 <script lang="ts">
-  import { Three } from '@threlte/core';
+  import { Mesh } from '@threlte/core';
+  import { AutoColliders, CollisionGroups } from '@threlte/rapier';
   import * as THREE from 'three';
-  import { TerrainMesh } from './TerrainMesh';
 
-  const terrainMesh = new TerrainMesh();
+  import { TiledTerrainMaterial } from './TiledTerrainMaterial';
+  import { generateMapTexture } from './generate-map-texture';
+
+  import tilesImage from './img/tiles3.png';
+
+  const loader = new THREE.TextureLoader();
+
+  const atlasTexture = loader.load(tilesImage);
+  atlasTexture.minFilter = THREE.NearestFilter;
+  atlasTexture.magFilter = THREE.NearestFilter;
+
+  const mapTexture = generateMapTexture([
+    [3, 0, 1, 1, 1, 1, 1, 1],
+    [0, 0, 2, 2, 2, 2, 2, 1],
+    [1, 2, 2, 2, 2, 1, 2, 1],
+    [1, 2, 2, 3, 2, 2, 2, 1],
+    [1, 2, 2, 2, 2, 2, 2, 1],
+    [1, 2, 2, 2, 2, 2, 2, 1],
+    [1, 2, 2, 2, 2, 0, 0, 1],
+    [1, 1, 1, 3, 1, 1, 1, 1],
+  ]);
+
+  const material = new TiledTerrainMaterial({
+    atlasTexture,
+    atlasTilesCount: new THREE.Vector2(2, 2),
+    mapTexture,
+    mapTilesCount: new THREE.Vector2(8, 8),
+    tileSizeInPixels: 128,
+  });
 </script>
 
-<Three type={terrainMesh} position={[0, 20, 0]} />
+<CollisionGroups groups={[0, 15]}>
+  <AutoColliders shape={'cuboid'} position={{ y: -0.5 }}>
+    <Mesh receiveShadow geometry={new THREE.BoxGeometry(100, 1, 100)} material={material} />
+  </AutoColliders>
+</CollisionGroups>

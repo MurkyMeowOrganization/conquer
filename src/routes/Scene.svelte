@@ -36,16 +36,6 @@
 
 <Sky />
 
-<CollisionGroups groups={[0, 15]}>
-  <AutoColliders shape={'cuboid'} position={{ y: -0.5 }}>
-    <Mesh
-      receiveShadow
-      geometry={new THREE.BoxGeometry(100, 1, 100)}
-      material={new THREE.MeshStandardMaterial()}
-    />
-  </AutoColliders>
-</CollisionGroups>
-
 <Terrain />
 
 <CollisionGroups groups={[0]}>

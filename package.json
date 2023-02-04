@@ -41,7 +41,9 @@
 	"type": "module",
 	"dependencies": {
 		"@tweakpane/core": "^1.1.1",
+		"bitecs": "^0.3.38",
 		"locally-unique-id-generator": "^0.1.5",
+		"mol_wire_lib": "^1.0.465",
 		"tweakpane": "^3.1.1"
 	}
 }

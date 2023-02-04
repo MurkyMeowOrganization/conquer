@@ -1,59 +1,30 @@
 varying vec2 vUv;
+varying vec2 vTileId;
 
-uniform vec2 mapSize; // (map columns, map rows)
-uniform vec2 tilesSize; // (tiles columns, tiles rows)
-
+// Size of our grid, please scale texture accordingly from outside
 uniform float tileSizeInPixels;
 
-uniform sampler2D map;
-uniform sampler2D tiles;
+// Size of textures in the atlas in pixels, assumed it is rectangular
+// Should be a power of 2
+uniform float textureAtlasTextureSizeInPixels;
 
-// vec2 random( vec2 pos )
-// { 
-// 	return clamp( fract(
-// 		sin(
-// 			vec2(
-// 				dot(pos, vec2(12.9898,78.233))
-// 			,	dot(pos, vec2(-148.998,-65.233))
-// 			)
-// 		) * 43758.5453
-// 	) - vec2( 0.0 ), vec2( 0.0 ), vec2( 1.0 ) );
-// }
+uniform vec2 textureAtlasSize;
 
-// void main() {
-//   // // vec2 tilePos = vUv / tilesSize;
+// Amount of textures per row (max) in the texture atlas
+// Should be 16384 / taTextureSize
+uniform float textureAtlasTexturesWidth;
 
-//   // float tileIndex = 0.0;
-//   // // vec2 tilePos = vec2(mod(tileIndex, tilesSize.x), floor(tileIndex / tilesSize.y));
-//   // vec2 tilePos = vec2(0.0, 0.0);
+// The width / height of the mapData in tiles. Set from outside
+// Set it to 2 less in both width / height than the mapData texture
+uniform vec2 mapTilesCount;
 
-//   // vec2 nUv = (vUv + 1.0) / 2.0;
-//   // nUv = tilePos / tilesSize * nUv;
-//   // nUv = nUv * 2.0 - 1.0;
+// The texture atlas
+uniform sampler2D textureAtlas;
 
-//   // vec4 color = texture2D(tiles,  nUv);
-
-//   // // gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
-//   // gl_FragColor = color;
-
-//   vec2 origin_uv = floor(vUv * mapSize);
-
-// 	vec2 origin_tile = clamp(origin_uv, vec2(0.0), vec2(1.0));
-
-// 	vec2 tile_uv = origin_tile / 3.0 + ( fract( vUv * mapSize ) / 3.0 );
-
-//   gl_FragColor = texture2D(tiles, origin_tile);
-// }
-
-// How many tiles x and y are there in the blend texture
-// Has to be a size that lines up with taTexturesWidth.
-// For instance if taTexturesWidth = 16, this could be 64,32,16,8,4,2,1
-// Just make sure that the larger one of this and taTexturesWidth loops perfectly
-// with chunk size of map. Else you will end up with artifacts
-// uniform float blendTextureTiles = 16.0;
-
-// Should we blend
-// uniform bool blend = true;
+// The map data
+// Currently only red channel is used to store the ID of the texture to use
+// from the textureAtlas texture
+uniform sampler2D mapData;
 
 //
 // Get the tile the current pixel is in.
@@ -61,7 +32,8 @@ uniform sampler2D tiles;
 //
 // returns - The tile position in the current mapData
 vec2 getTilePos(vec2 uv) {
-  return floor(uv * mapSize);
+	// Find the tile we are on (we got a border of 1 so +1)
+	return vec2(floor(uv.x * mapTilesCount.x)+1.0, floor(uv.y * mapTilesCount.y));
 }
 
 //
@@ -71,8 +43,8 @@ vec2 getTilePos(vec2 uv) {
 //
 // returns - the pixel position within the current tile
 vec2 getPixelPosInTile(vec2 uv) {
-	float exactPosX = floor(((uv.x * mapSize.x)+1.0) * tileSizeInPixels);
-	float exactPosY = floor(((uv.y * mapSize.y)+1.0) * tileSizeInPixels);
+	float exactPosX = floor(((uv.x * mapTilesCount.x)) * tileSizeInPixels);
+	float exactPosY = floor(((uv.y * mapTilesCount.y)) * tileSizeInPixels);
 	float relativePosX = mod(exactPosX, tileSizeInPixels);
 	float relativePosY = mod(exactPosY, tileSizeInPixels);
 	return vec2(relativePosX, relativePosY);
@@ -84,8 +56,8 @@ vec2 getPixelPosInTile(vec2 uv) {
 //
 // returns - the ID of the tile from the mapData texture's red channel
 float getTileId(vec2 pos) {
-	float tileRed = texture2D(map, pos).r;
-	return tileRed;
+	float tileRed = texture2D(mapData, pos / mapTilesCount).r;
+	return tileRed * 255.0;
 }
 
 //
@@ -96,22 +68,22 @@ float getTileId(vec2 pos) {
 //
 // returns - The coordinate of the pixel to use from the textureAtlas
 vec2 getAtlasPixelPos(vec2 pixelPosInTile, float tileId, vec2 tile) {
-	// Find out how many tiles are within each texture atlas texture
-	float tileRepeat = tilesSize.x;
-
 	// Find the row/column in the texture atlas to use
 	// and calculate the pixel position
-	float row = mod(tileId, tileRepeat);
-	float col = floor(tileId / tileRepeat);
-	vec2 textureStartPos = vec2(tileSizeInPixels * col, tileSizeInPixels * row);
+	float row = floor(tileId / textureAtlasTexturesWidth);
+	float col = tileId - (row * textureAtlasTexturesWidth);
+	vec2 textureStartPos = vec2(textureAtlasTextureSizeInPixels * col, 
+								textureAtlasTextureSizeInPixels * row);
+
+	// Find out how many tiles are within each texture atlas texture
+	float tileRepeat = textureAtlasTextureSizeInPixels / tileSizeInPixels;
 
 	// Mod our current position in the map with how many cells we got in
 	// each atlas texutre. Then multiply this by tile size.
 	// This gives us the correct part of the mega texture to use.
 	float xAdd = mod(tile.x, tileRepeat) * tileSizeInPixels;
-	float yAdd = floor(tile.y / tileRepeat) * tileSizeInPixels;
-	// textureStartPos += vec2(xAdd, yAdd);
-	textureStartPos += vec2(0.0);
+	float yAdd = mod(tile.y, tileRepeat) * tileSizeInPixels;
+	textureStartPos += vec2(xAdd, yAdd);
 
 	// Add the current position in the tile to where the current atlas
 	// tile starts. This will give us the atlas pixel we want.
@@ -127,27 +99,61 @@ vec2 getAtlasPixelPos(vec2 pixelPosInTile, float tileId, vec2 tile) {
 // returns - the color for the current pixel based on the tileId
 vec4 getColorForCurrentPixel(vec2 tile, float tileId, vec2 pixelPosInTile) {
 	vec2 pixelPosAtlas = getAtlasPixelPos(pixelPosInTile, tileId, tile);
-	return texture2D(tiles, pixelPosAtlas);
+	return texture2D(textureAtlas, pixelPosAtlas / textureAtlasSize, -10.0);
+}
+
+// void main() {
+// 	// Get our tile position & pixel position in the tile
+// 	vec2 tile = getTilePos(vUv);
+// 	vec2 pixelPosInTile = getPixelPosInTile(vUv);
+
+// 	// Grab the ID of the atlas texture to use and the color for this pixel
+// 	float tileIdSelf = getTileId(tile);
+// 	vec4 colorSelf = getColorForCurrentPixel(tile, tileIdSelf, pixelPosInTile);
+
+// 	// Check if we should blend
+//   gl_FragColor = colorSelf;
+// }
+
+
+float rand(vec2 n) { 
+	return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
+}
+
+float noise(vec2 p){
+	vec2 ip = floor(p);
+	vec2 u = fract(p);
+	u = u*u*(3.0-2.0*u);
+
+	float res = mix(
+		mix(rand(ip),rand(ip+vec2(1.0,0.0)),u.x),
+		mix(rand(ip+vec2(0.0,1.0)),rand(ip+vec2(1.0,1.0)),u.x),u.y);
+	return res*res;
+}
+
+vec2 pixelate(vec2 uv, float amount) {
+  return floor(uv * amount) / amount;
 }
 
 void main() {
-	// Get our tile position & pixel position in the tile
-	// vec2 tile = getTilePos(vUv);
-	// vec2 pixelPosInTile = getPixelPosInTile(vUv);
+  float tileId = floor(texture2D(mapData, pixelate(vUv, 8.0)).r * 255.0);
+	// floor(
+  //   texture2D(
+  //     mapData,
+  //     floor(vUv * mapTilesCount) / mapTilesCount
+  //   ).r * 255.0
+  // );
 
-  // Grab the ID of the atlas texture to use and the color for this pixel
-  // vec4 colorSelf = getColorForCurrentPixel(tile, tileIdSelf, pixelPosInTile);
+	// float tileId = texture2D(mapData, vTileId).r * 255.0;
 
-  vec2 tileId = floor(vUv * mapSize);
+  float col = mod(tileId, 2.0);
+  float row = floor(tileId / 2.0);
 
-  // float tileIdSelf = texture2D(map, 1.0 / ( vUv * mapSize ) ).r * 255.0;
-  // float tileIdSelf = texture2D(map, vec2()).r * 255.0;
+  vec2 spriteOffset = vec2(col, row) * tileSizeInPixels;
 
-  // gl_FragColor = vec4(tileIdSelf, 0.0, 0.0, 1.0);
+  vec2 spriteCoord = mod(vUv * 512.0, 128.0);
 
-  vec2 tileSize = 1.0 / tilesSize;
+  gl_FragColor = texture2D(textureAtlas, (spriteOffset + spriteCoord) / textureAtlasSize);
 
-  vec2 start = tileId * tileSize;
-
-  gl_FragColor = texture2D(tiles, start + vUv * tileSize);
+	// gl_FragColor = vec4(tileId / 5.0, 0.0, 0.0, 1.0);
 }

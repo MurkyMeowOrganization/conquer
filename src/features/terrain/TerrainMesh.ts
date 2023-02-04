@@ -37,29 +37,15 @@ export class TerrainMesh extends THREE.Mesh {
     const loader = new THREE.TextureLoader();
 
     const mapData = loader.load(mapImage);
-    // const mapData = new THREE.CanvasTexture(canvas);
     mapData.minFilter = THREE.NearestFilter;
     mapData.magFilter = THREE.NearestFilter;
 
     const tilesTexture = loader.load(tilesImage);
-    // tilesTexture.magFilter = THREE.LinearFilter;
     tilesTexture.minFilter = THREE.NearestFilter;
 
     const uniforms: Record<string, THREE.IUniform> = {
       tileSizeInPixels: {
         value: 128,
-      },
-
-      textureAtlasTextureSizeInPixels: {
-        value: 128,
-      },
-
-      textureAtlasSize: {
-        value: new THREE.Vector2(256, 256),
-      },
-
-      textureAtlasTexturesWidth: {
-        value: 2,
       },
 
       mapTilesCount: {
@@ -70,41 +56,13 @@ export class TerrainMesh extends THREE.Mesh {
         value: tilesTexture,
       },
 
+      atlasTilesCount: {
+        value: new THREE.Vector2(2, 2),
+      },
+
       mapData: {
         value: mapData,
       },
-
-      // uViewportSize: {
-      //   value: new THREE.Vector2(1366, 768),
-      // },
-
-      // uInverseLayerTileCount: {
-      //   value: new THREE.Vector2(1 / 2, 1 / 2),
-      // },
-
-      // uInverseLayerTileSize: {
-      //   value: new THREE.Vector2(1 / 128, 1 / 128),
-      // },
-
-      // map: {
-      //   value: mapData,
-      // },
-
-      // mapSize: {
-      //   value: new THREE.Vector2(mapWidth, mapHeight),
-      // },
-
-      // tiles: {
-      //   value: tilesTexture,
-      // },
-
-      // tilesSize: {
-      //   value: new THREE.Vector2(2, 2),
-      // },
-
-      // tileSizeInPixels: {
-      //   value: 128,
-      // },
     };
 
     const material = new THREE.ShaderMaterial({

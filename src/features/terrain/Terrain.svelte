@@ -6,13 +6,12 @@
   import { TiledTerrainMaterial } from './TiledTerrainMaterial';
   import { generateMapTexture } from './generate-map-texture';
 
-  import tilesImage from './img/tiles3.png';
-  import mapImage from './img/map3.png';
+  import tilesImage from './img/tiles4.jpg';
+  import mapImage from './img/map5.png';
 
   const loader = new THREE.TextureLoader();
 
   const atlasTexture = loader.load(tilesImage);
-  atlasTexture.minFilter = THREE.NearestFilter;
   atlasTexture.magFilter = THREE.NearestFilter;
 
   // const mapTexture = generateMapTexture([
@@ -41,13 +40,19 @@
     atlasTexture,
     atlasTilesCount: new THREE.Vector2(2, 2),
     mapTexture,
-    mapTilesCount: new THREE.Vector2(8, 8),
-    tileSizeInPixels: 128,
+    mapTilesCount: new THREE.Vector2(128, 256),
+    tileSizeInPixels: 32,
   });
 </script>
 
 <CollisionGroups groups={[0, 15]}>
   <AutoColliders shape={'cuboid'} position={{ y: -0.5 }}>
-    <Mesh receiveShadow geometry={new THREE.BoxGeometry(100, 1, 100)} material={material} />
+    <Mesh receiveShadow geometry={new THREE.BoxGeometry(64, 1, 256)} material={material} />
   </AutoColliders>
 </CollisionGroups>
+
+<Mesh
+  geometry={new THREE.BoxGeometry()}
+  material={material}
+  position={new THREE.Vector3(0, 2, 0)}
+/>

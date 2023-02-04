@@ -6,4 +6,4 @@
   const terrainMesh = new TerrainMesh();
 </script>
 
-<Three type={terrainMesh} />
+<Three type={terrainMesh} position={[0, 20, 0]} />

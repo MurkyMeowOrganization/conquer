@@ -1,31 +1,8 @@
 varying vec2 vUv;
-varying vec2 vTileId;
-
-uniform float tileSizeInPixels;
-
-// Size of textures in the atlas in pixels, assumed it is rectangular
-// Should be a power of 2
-uniform float textureAtlasTextureSizeInPixels;
-
-uniform vec2 textureAtlasSize;
-
-// Amount of textures per row (max) in the texture atlas
-// Should be 16384 / taTextureSize
-uniform float textureAtlasTexturesWidth;
-
-// The width / height of the mapData in tiles. Set from outside
-// Set it to 2 less in both width / height than the mapData texture
-uniform vec2 mapTilesCount;
-
-// The texture atlas
-uniform sampler2D textureAtlas;
 
 void main() {
   vUv = uv;
 
   vec4 mvPosition = modelViewMatrix * vec4(position, 1.0 );
-
-  vTileId = vUv / textureAtlasSize / tileSizeInPixels;
-
   gl_Position = projectionMatrix * mvPosition;
 }

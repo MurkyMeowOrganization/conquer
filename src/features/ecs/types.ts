@@ -1,3 +1,5 @@
+import type { Engine } from 'tick-knock';
+
 export interface ConquerTime {
   delta: number;
   elapsed: number;
@@ -8,6 +10,5 @@ export interface ConquerWorld {
 }
 
 export interface ECSContextType {
-  world: ConquerWorld;
-  worldId: number;
+  engine: Engine;
 }

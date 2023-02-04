@@ -5,15 +5,14 @@
   import { getECS } from './getECS';
   import type { ECSContextType } from './types';
 
-  const { world, worldId, pipeline } = getECS();
+  const { engine, update } = getECS();
 
   useFrame((_, dt) => {
-    pipeline(dt);
+    update(dt);
   });
 
   setContext<ECSContextType>(ECS_CONTEXT_KEY, {
-    world,
-    worldId,
+    engine,
   });
 </script>
 

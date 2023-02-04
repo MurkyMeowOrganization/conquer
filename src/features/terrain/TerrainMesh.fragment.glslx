@@ -25,12 +25,9 @@ void main() {
 
   vec2 tileStart = vec2(col, row) * tileSizeInPixels;
 
-  vec2 tileCoord = mod(
-		vUv * tileSizeInPixels * atlasTilesCount,
-		tileSizeInPixels
-	);
-
 	vec2 textureAtlasSize = tileSizeInPixels * atlasTilesCount;
+
+  vec2 tileCoord = mod(vUv * textureAtlasSize * 2.0, tileSizeInPixels);
 
   gl_FragColor = texture2D(
 		textureAtlas,

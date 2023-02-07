@@ -102,4 +102,7 @@
   <Player position={{ z: 2 }} />
 </CollisionGroups>
 
-<Tree />
+<Tree position={[0, 0, -3]} />
+<Tree position={[0, 0, 2]} />
+<Tree position={[1, 0, 3]} />
+<Tree position={[2, 0, -1]} />

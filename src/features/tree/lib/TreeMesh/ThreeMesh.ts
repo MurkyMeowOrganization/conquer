@@ -15,14 +15,23 @@ export class TreeMesh extends THREE.Mesh {
     const { leavesTexture, trunkTexture } = options;
 
     const uniforms: { [uniform: string]: THREE.IUniform } = {
-      iTime: {
+      time: {
         value: 0,
-      },
-      pixelization: {
-        value: 50,
       },
       tex: {
         value: leavesTexture,
+      },
+      move_top: {
+        value: false,
+      },
+      time_scale: {
+        value: 1,
+      },
+      noise_scale: {
+        value: 0.2,
+      },
+      distortion_force: {
+        value: new THREE.Vector2(0.2, 0.2),
       },
     };
 
@@ -32,6 +41,7 @@ export class TreeMesh extends THREE.Mesh {
       uniforms,
       side: DoubleSide,
       transparent: true,
+      depthWrite: false,
     });
 
     const topLeft = [0, 0];
@@ -99,6 +109,6 @@ export class TreeMesh extends THREE.Mesh {
   }
 
   updateTime(time: number) {
-    this._material.uniforms.iTime.value = time;
+    this._material.uniforms.time.value = time;
   }
 }

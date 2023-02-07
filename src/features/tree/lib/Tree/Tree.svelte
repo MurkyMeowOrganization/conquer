@@ -2,8 +2,10 @@
   import { Three, useFrame } from '@threlte/core';
   import * as THREE from 'three';
   import { TreeMesh, TreeTrunkMesh } from '../TreeMesh/index';
-  import trunkImage from '../../img/pine_tree_1_trunk.png';
-  import leavesImage from '../../img/pine_tree_1_leaves.png';
+  import trunkImage from '../../img/trunk.png';
+  import leavesImage from '../../img/leaves.png';
+
+  export let position: [number, number, number];
 
   const loader = new THREE.TextureLoader();
   const treeTexture = loader.load(leavesImage);
@@ -30,5 +32,6 @@
   });
 </script>
 
-<Three type={treeMesh} position={[0, 1, -3]} />
-<Three type={treeTrunkMesh} position={[0, 0, -3]} />
+<Three type={treeTrunkMesh} position={[position[0], position[1] + 2, position[2]]}>
+  <Three type={treeMesh} position={[0, -1.7, 0]} />
+</Three>

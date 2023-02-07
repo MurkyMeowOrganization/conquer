@@ -5,8 +5,6 @@
 
   import windSound from '../sound/gusty_wind.mp3';
 
-  let a = 5;
-
   const audio = new Audio();
   audio.src = windSound;
 

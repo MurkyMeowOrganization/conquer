@@ -1,8 +1,68 @@
+// THREE.js built-ins:
+// uniform mat4 modelViewMatrix;
+// uniform mat4 projectionMatrix;
+// attribute vec3 position;
+// attribute vec2 uv;
+
+// how strong is the vertex going to be pulled = vec2(10.0, 0.0)
+uniform vec2 distortion_force;
+
+// helpful to visually debug the noise scrolling texture.
+// uniform bool render_noise = false;
+
+// Change if you want to move the bottom vertex of each tile. = true
+uniform bool move_top;
+
+// how fast is the noise texture is going to scroll. :hint_range(0.0, 1.0, 0.01) = 0.1
+uniform float time_scale;
+
+uniform float time;
+
+// the scale of the texture :hint_range(0.0, 2.0, 0.0001) = 0.002
+uniform float noise_scale;
+
+varying vec2 world_position;
 varying vec2 vUv;
+
+vec2 get_uv(vec2 uv, float scale, float time) {
+	vec2 new_uv = uv;
+	new_uv *= scale;
+	new_uv += time;
+	return new_uv;
+}
+
+float rand(float n) {
+  return fract(sin(n) * 43758.5453123);
+}
+
+float noise(float p){
+	float fl = floor(p);
+  float fc = fract(p);
+	return mix(rand(fl), rand(fl + 1.0), fc);
+}
 
 void main() {
   vUv = uv;
 
-  vec4 mvPosition = modelViewMatrix * vec4(position, 1.0 );
-  gl_Position = projectionMatrix * mvPosition;
+  vec4 pos = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+
+  world_position = pos.xy;
+	vec2 world_uv = get_uv(world_position, noise_scale, time * time_scale);
+	vec2 noise = vec2(noise(world_uv.x), noise(world_uv.y));
+	noise *= 2.0;
+	noise -= 1.0;
+	noise *= distortion_force;
+
+	float a = position.y;
+
+	if (a == 0.0 && move_top) {
+		pos.x += noise.x;
+		pos.y += noise.y;
+	}
+	if (a > 0.0 && !move_top) {
+		pos.x += noise.x;
+		pos.y += noise.y;
+	}
+
+  gl_Position = pos;
 }

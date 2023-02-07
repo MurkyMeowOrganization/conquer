@@ -5,8 +5,10 @@ export class TreeTrunkMesh extends THREE.Mesh {
     const material = new THREE.MeshBasicMaterial({
       map: texture,
       transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide,
     });
 
-    super(new THREE.CylinderGeometry(0.01, 0.01, 4), material);
+    super(new THREE.PlaneGeometry(1, 4), material);
   }
 }
